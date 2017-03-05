@@ -4,9 +4,7 @@ This tutorial will help you to set up Kubernetes clusters, in the hard way, and 
 
 This guide intends to provide production-ready instructions on specified infrastructures.
 
-
-
-Donate for more 
+# Donate for more supporting
 
 Every complete guide in this tutorial is tested on bare metal hosts, like Digital Ocean VPS.
 
