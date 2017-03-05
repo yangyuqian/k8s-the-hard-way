@@ -12,7 +12,7 @@ $ uname -r
 
 Kubernetes: v1.5.3
 
-Overlay Networking: Flannel
+Networking: Flannel
 
 Container Engine: Docker
 
