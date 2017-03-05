@@ -36,9 +36,33 @@ Check out you infrastructure:
 
 ## Setup Hosts for Cluster {#setuphosts}
 
+In case there is no DNS support for your hosts, you can add a custom domain to their /etc/hosts as work around
 
+```
+$ cat <EOF > /etc/hosts
+<master-ip> <master-domain>
+<minion-1-ip> <minion-1-domain>
+...
+<minion-N-ip> <minion-N-domain>
+EOF
+```
 
 ## Disable Firewalls {#disablefirewall}
+
+On CentOS 7, Selinux is enabled by default, disable it to get rid of unexpected errors
+
+```
+$ setenforce 0
+```
+
+Stop firewalls
+
+```
+$ systemctl disable iptables-services firewalld
+...
+$ systemctl stop iptables-services firewalld
+...
+```
 
 
 
