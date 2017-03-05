@@ -4,11 +4,9 @@ This tutorial will help you to set up Kubernetes clusters, for specified infrast
 
 Infrastructure items considers in this tutorial are OS, Networking, Container Engine, Kubernetes, DNS of Kubernetes, Monitoring.
 
-
-
 | OS | Networking | Container Engine | Kubernetes | DNS of Kubernetes | Monitoring |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| CentOS 7 | Flannel | Docker | Kubernetes 1.5.3 | SkyDNS | Heapster |
+| CentOS 7 | Flannel | Docker 1.12 | Kubernetes 1.5.3 | SkyDNS | Heapster |
 
 # Donate for more supporting and reports
 
