@@ -10,5 +10,5 @@ Every complete guide in this tutorial is tested on bare metal hosts, like Digita
 
 You can get more support by donate to my Wechat account and leave issues on Github.
 
-
+![](/assets/1449260029.jpg)
 
