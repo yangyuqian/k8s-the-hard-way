@@ -8,6 +8,8 @@ Networking is one of the most important part in a Kubernetes cluster, and you ca
 
 * Container sees a similar IP that others see
 
+Generally, this network model defines a layer 2 connectivity among nodes in your cluster.
+
 ## Solutions
 
 There are many solutions implement the [network model](https://kubernetes.io/docs/admin/networking/#kubernetes-model) defined by Kubernetes, and following are in-depth introduction on some of them:
