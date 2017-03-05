@@ -16,3 +16,5 @@ Overlay Networking: Flannel
 
 Container Engine: Docker
 
+DNS: SkyDNS
+
