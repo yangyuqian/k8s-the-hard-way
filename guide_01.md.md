@@ -10,31 +10,13 @@ $ uname -r
 3.10.0-327.36.3.el7.x86_64
 ```
 
-Kubernetes
+Kubernetes: v1.5.3
 
-```
-$ kubectl version
+Networking: Flannel
 
-TODO
-```
+Container Engine: Docker
 
-ETCD
 
-```
-TODO
-```
-
-Flannel
-
-```
-TODO
-```
-
-Container Engine
-
-```
-TODO
-```
 
 
 
