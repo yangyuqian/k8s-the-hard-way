@@ -6,7 +6,7 @@ This guide intends to provide production-ready instructions on specified infrast
 
 # Donate for more supporting
 
-Every guide in this tutorial is tested on bare metal hosts, like Digital Ocean VPS.
+Every guide in this tutorial is completedly tested on bare metal hosts, like Digital Ocean VPS.
 
 You can get more support by donate to my Wechat account and leave issues on Github.
 
