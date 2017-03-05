@@ -8,6 +8,10 @@ Infrastructure items considers in this tutorial are OS, Networking, Container En
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | CentOS 7 | Flannel | Docker 1.12 | Kubernetes 1.5.3 | SkyDNS | Heapster |
 
+
+
+
+
 # Donate for more supporting and reports
 
 Every guide in this tutorial is completedly tested on bare metal hosts, like Digital Ocean VPS, which can be apply to any other platforms.
