@@ -1,6 +1,6 @@
 # Infrastructure
 
-OS on Digital Ocean
+OS
 
 ```
 $ cat /etc/centos-release
@@ -15,8 +15,4 @@ Kubernetes: v1.5.3
 Networking: Flannel
 
 Container Engine: Docker
-
-
-
-
 
