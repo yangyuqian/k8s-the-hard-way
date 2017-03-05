@@ -6,7 +6,7 @@ This tutorial will help you to set up Kubernetes clusters, for specified infrast
 
 | OS | Networking | Container Engine | Kubernetes | DNS of Kubernetes | Monitoring | Guide |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| CentOS 7 | Flannel | Docker 1.12 | Kubernetes 1.5.3 | SkyDNS | Heapster |  |
+| CentOS 7 | Flannel | Docker 1.12 | Kubernetes 1.5.3 | SkyDNS | Heapster | [guide\_01.md](/guide_01.md.md "Guide 01") |
 
 # Donate for more supporting and reports
 
