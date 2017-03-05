@@ -12,7 +12,7 @@ This tutorial will help you to set up Kubernetes clusters, for specified infrast
 
 Every guide in this tutorial is completedly tested on bare metal hosts, like Digital Ocean VPS, which can be apply to any other platforms.
 
-All guides here are for free, but you can get more support by donate to my Wechat account and leave issues on Github.
+All guides here are for free, but you can get more support by donating to my Wechat account and leave issues on Github.
 
 ![](/assets/1449260029.jpg)
 
