@@ -22,4 +22,6 @@ spec:
     name: qperf-server
   ports:
   - port: 4000
+    targetPort: 4000
   - port: 4001
+    targetPort: 4001
