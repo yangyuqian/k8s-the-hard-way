@@ -8,7 +8,19 @@ spec:
   - image: arjanschaaf/centos-qperf
     args: ["-lp", "4000"]
     imagePullPolicy: IfNotPresent
-    name: busybox
+    ports:
+        - containerPort: 4000
+          name: p1udp
+          protocol: UDP
+        - containerPort: 4000
+          name: p1tcp
+          protocol: TCP
+        - containerPort: 4001
+          name: p2tcp
+          protocol: TCP
+        - containerPort: 4001
+          name: p2udp
+          protocol: UDP
   restartPolicy: Always
   
 ---
@@ -21,7 +33,15 @@ spec:
   selector:
     name: qperf-server
   ports:
-  - port: 4000
-    targetPort: 4000
-  - port: 4001
-    targetPort: 4001
+  - name: p1udp
+    port: 4000
+    protocol: UDP
+  - name: p1tcp
+    port: 4000
+    protocol: TCP
+  - name: p2udp
+    port: 4001
+    protocol: UDP
+  - name: p2tcp
+    port: 4001
+    protocol: TCP
