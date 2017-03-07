@@ -6,7 +6,10 @@
 ##################################################################
 
 # Create the qperf server rc and service
+echo "Setup test environment ..."
 kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-way/master/assets/qperf-server.yaml
+sleep 10
+echo "... Done"
 
 # Profile the service
 echo "Profileing TCP and UDP on Service ..."
