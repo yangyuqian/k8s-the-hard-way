@@ -4,6 +4,8 @@ This tutorial will help you to set up Kubernetes clusters, for specified infrast
 
 # Available Guides
 
+> This tutorial intends to provide production-ready guides to set up Kubernetes, alpha/beta features\(such as network plugins for kubelet\) aren't considered for now.
+
 | OS | Networking | Container Engine | Kubernetes | DNS of Kubernetes | Monitoring | Guide |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | CentOS 7 | Flannel | Docker 1.12 | Kubernetes 1.5.3 | SkyDNS | Heapster | [guide\_01.md](/guide_01.md.md "Guide 01") |
