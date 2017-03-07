@@ -11,7 +11,7 @@ Networking is one of the most important part in a Kubernetes cluster, and you ca
 Generally, this network model defines a layer 2 connectivity among nodes in your cluster, and it can be achieved by
 
 * Overlay network
-* Physical layer 2 to connectivity
+* Physical layer 2 to connectivity, which requires extra support in the infrastructure, like GCE advanced routes
 
 ## Solutions
 
