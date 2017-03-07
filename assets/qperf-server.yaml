@@ -20,10 +20,4 @@ metadata:
 spec:
   selector:
     name: qperf-server
-  ports:
-  - port: 4000
-    targetPort: 4000
-    name: p4000
-  - port: 4001
-    targetPort: 4001
-    name: p4001
+  ports: [4000, 4001]
