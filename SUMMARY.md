@@ -8,6 +8,6 @@
 
 * [guide\_01.md](guide_01.md.md)
 * [Networking](overlay-networking.md)
-  * [Overlay](overlay-networking/overlay.md)
+  * [Overlay Network](overlay-networking/overlay.md)
   * [Flannel](overlay-networking/flannel.md)
 
