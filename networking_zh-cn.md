@@ -1,6 +1,6 @@
 # Kubernetes集群中的网络
 
-网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望对其他的解决方案有一些启发.
+网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他的解决方案有一些启发.
 
 > 友情提示：本文假设读者对Linux Kernel中虚拟网桥、iptables已经有一定的了解，正文中不对overlay network和iptable规则等多做赘述.
 
@@ -14,7 +14,7 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 
 ## 网络结构
 
-实际上，Kubernetes网络应该由2部分组成：
+Kubernetes网络应该由2部分组成：
 
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
 * 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
