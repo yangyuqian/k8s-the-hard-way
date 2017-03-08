@@ -13,7 +13,7 @@ Generally, this network model defines a layer 2 connectivity among nodes in your
 * [Overlay network](/overlay-networking/overlay.md)
 * Physical layer 2 to connectivity
 
-This guide will go through some implementations of the overlay network.
+This guide will go through some implementations of the overlay network and the overall network in a Kubernetes cluster.
 
 ## List of Contents
 
