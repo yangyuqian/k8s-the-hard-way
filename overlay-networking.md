@@ -25,9 +25,9 @@ service "nginx-service" created
 The created pod is accessible through the IP offered by an overlay network:
 
 ```
-$ kubectl get pod --selector="app=nginx" -o jsonpath='{ .items[0].status.podIP }'
+$ kubectl get pod --selector="app=nginx" -o jsonpath='{ .items[*].status.podIP }'
 
-172.30.40.3
+172.30.40.3 172.30.98.4
 
 $ curl 172.30.40.3:80
 <!DOCTYPE html>
