@@ -2,7 +2,7 @@
 
 网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他解决方案有所启发.
 
-> 友情提示：本文假设读者对Linux Kernel中虚拟网桥、iptables已经有一定的了解，正文中不对overlay network和iptable规则等多做赘述.
+> 友情提示：本文假设读者对Linux Kernel中虚拟网桥、iptables已经有一定的了解，正文中不对overlay network和iptable规则等多做赘述. 另外Service-Pod流量转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
 
 ## k8s网络组成分析
 
@@ -75,12 +75,15 @@ $ curl nginx-service:8000
 
 ![](/assets/k8s-network \(1\).png)
 
-> 总结：
->
-> 1. kube-proxy并不承担实际的流量转发工作，实际上它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则，即使把kube-proxy停掉，已经生成的规则还是可用的.
-> 2. Service到Pod的流量完全在本机网络中完成，简单而不失高效.
-> 3. Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
-> 4. 本文中介绍iptable转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
+### 总结
+
+kube-proxy并不承担实际的流量转发工作，实际上它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则，即使把kube-proxy停掉，已经生成的规则还是可用的.
+
+Service到Pod的流量完全在本机网络中完成，简单而不失高效.
+
+Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
+
+
 
 ## 性能评估
 
