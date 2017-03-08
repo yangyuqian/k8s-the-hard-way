@@ -69,7 +69,7 @@ $ curl nginx-service:8000
 
 ![](/assets/k8s-network \(1\).png)
 
-> 注意：
+> 总结：
 >
 > 1. kube-proxy并不承担实际的流量转发工作，实际上它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则，即使把kube-proxy停掉，已经生成的规则还是可用的.
 > 2. Service到Pod的流量完全在本机网络中完成，简单而不失高效.
