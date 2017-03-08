@@ -36,6 +36,12 @@ $ curl 172.30.98.4:80
 ...
 ```
 
+> 注意下面“在集群内”的命令都需要attach到一个Pod里面才可以
+>
+> ```
+> kubectl run --rm -it curl --image="docker.io/appropriate/curl" sh
+> ```
+
 也可以在集群内，使用Cluster IP来访问服务：
 
 ```
@@ -57,15 +63,15 @@ $ curl nginx-service:8000
 ...
 ```
 
-Figure 1 shows the network of above example\(use flannel to build the overlay network\)
+图1 上面例子的网络图解（采用flannel来搭建overlay network）
 
 ![](/assets/k8s-network \(1\).png)
 
-Pods are connected through overlay network, and iptable rules are created dynamically by kube-proxy, traffic to services will be dispatched to the pod IP in the overlay network; The DNS server is also updated dynamically and resolve domains into the virtual cluster IPs.
-
-Note that kube-proxy doesn't dispatch traffic for Services-Pods, instead, it generates iptable rules and the kernel will handle data forwarding.
-
-Technically, you can stop the kube-proxy and iptable rules are kept unchanged, so Services will be still available.
+> 注意：
+>
+> 1. kube-proxy并不承担实际的流量转发，实际上它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则，即使把kube-proxy停掉，已经生成的规则还是可用的.
+> 2. Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%的流量转发.
+> 3. 本文中介绍iptable转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
 
 
 
