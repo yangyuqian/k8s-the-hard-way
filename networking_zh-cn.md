@@ -1,6 +1,8 @@
 # Kubernetes集群中的网络
 
-网络是Kubernetes\(下称k8s\)集群中的关键组成部分，k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https://kubernetes.io/docs/admin/networking/#kubernetes-model)）：
+网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望对其他的解决方案有一些启发.
+
+k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https://kubernetes.io/docs/admin/networking/#kubernetes-model)）：
 
 * 容器之间不需要NAT，直接可见
 
