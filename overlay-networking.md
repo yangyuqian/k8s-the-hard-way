@@ -126,7 +126,9 @@ Commercial support is available at
 </html>
 ```
 
-Figure 1 shows the network of above example
+Figure 1 shows the network of above example\(use flannel to build the overlay network\)
 
+![](/assets/k8s-network.png)
 
+Pods are connected through overlay network, and iptable rules are created dynamically by kube-proxy, so that traffic passed to Services will be forwarded to downstream Pods; The DNS server is also updated dynamically and resolve domains into the virtual cluster IPs.
 
