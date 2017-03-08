@@ -38,7 +38,7 @@ $ curl 172.30.98.4:80
 ...
 ```
 
-> 注意下面“在集群内”的命令都需要attach到一个Pod里面才可以
+> 注意下面“在集群内”的命令都需要attach到一个Pod里面才可以执行
 >
 > ```
 > kubectl run --rm -it curl --image="docker.io/appropriate/curl" sh
