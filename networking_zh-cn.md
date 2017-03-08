@@ -92,17 +92,13 @@ $ curl nginx-service:8000
 
 ![](/assets/cluster-topgraphy.png)
 
-
-
 > 分别对下面3种网络访问方式，使用[qperf](https://linux.die.net/man/1/qperf)做TCP和UDP的带宽和延迟测试：
 >
 > 1. 节点之间
 > 2. Pod-Pod之间
 > 3. Pod-Service-Pod
 
-
-
-实验1. 节点之间
+### 实验1 节点之间
 
 Node 1上启动qperf server:
 
@@ -149,10 +145,9 @@ conf:
     rem_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
     rem_os     =  Linux 3.10.0-514.6.1.el7.x86_64
     rem_qperf  =  0.4.9
-
 ```
 
-实验 2：Pod-Pod之间
+### 实验 2 Pod-Pod之间
 
 部署qperf-server：
 
@@ -160,7 +155,7 @@ conf:
 $ kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-way/master/assets/qperf-server.yaml
 ```
 
-测试Pod-Pod之间网络转发：
+测试Pod-Pod之间网络：
 
     $ podip=`kubectl get pod --selector="k8s-app=qperf-server" -o jsonpath='{ .items[0].status.podIP }'`
     $ kubectl run qperf-client -it --rm --image="arjanschaaf/centos-qperf" -- -v $podip -lp 4000 -ip 4001  tcp_bw tcp_lat udp_bw udp_lat conf
@@ -203,5 +198,60 @@ $ kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-wa
         rem_os     =  Linux 3.10.0-514.6.1.el7.x86_64
         rem_qperf  =  0.4.9
 
+### 实验 3 Service-Pod之间
 
+部署qperf-server：
+
+```
+$ kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-way/master/assets/qperf-server.yaml
+```
+
+测试Pod - Service - Pod网络：
+
+```
+$ kubectl run qperf-client -it --rm --image="arjanschaaf/centos-qperf" -- -v qperf-server -lp 4000 -ip 4001  tcp_bw tcp_lat udp_bw udp_lat conf
+
+tcp_bw:
+    bw              =    217 MB/sec
+    msg_rate        =   3.31 K/sec
+    port            =  4,001
+    send_cost       =   1.38 sec/GB
+    recv_cost       =   3.11 sec/GB
+    send_cpus_used  =     30 % cpus
+    recv_cpus_used  =   67.5 % cpus
+tcp_lat:
+    latency        =    157 us
+    msg_rate       =   6.38 K/sec
+    port           =  4,001
+    loc_cpus_used  =     15 % cpus
+    rem_cpus_used  =   14.5 % cpus
+udp_bw:
+    send_bw         =   1.28 GB/sec
+    recv_bw         =   7.83 MB/sec
+    msg_rate        =    239 /sec
+    port            =  4,001
+    send_cost       =    693 ms/GB
+    recv_cost       =   69.6 sec/GB
+    send_cpus_used  =     89 % cpus
+    recv_cpus_used  =   54.5 % cpus
+udp_lat:
+    latency        =    140 us
+    msg_rate       =   7.12 K/sec
+    port           =  4,001
+    loc_cpus_used  =   17.5 % cpus
+    rem_cpus_used  =     11 % cpus
+conf:
+    loc_node   =  qperf-client-3660233240-w0nq9
+    loc_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+    loc_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+    loc_qperf  =  0.4.9
+    rem_node   =  qperf-server-rmjd8
+    rem_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+    rem_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+    rem_qperf  =  0.4.9
+```
+
+### 评估结论
+
+默认mtu配置下，基于Flannel的Overlay Network对转发延迟延迟在数十微妙级，对带宽有一定影响，
 
