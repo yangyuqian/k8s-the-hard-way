@@ -253,5 +253,5 @@ conf:
 
 ### 评估结论
 
-默认mtu配置下，基于Flannel的Overlay Network的转发延迟在微妙量级，对带宽有一定影响，
+默认mtu配置下，基于Flannel的Overlay Network的转发延迟在微妙量级，对带宽有一定影响（减半）.
 
