@@ -77,9 +77,9 @@ $ curl nginx-service:8000
 
 ### 总结
 
-kube-proxy并不承担实际的流量转发工作，实际上，它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则. 即使把kube-proxy停掉，已经生成的规则还是可用的.
-
 Service到Pod的流量完全在本机网络中完成，简单而不失高效.
+
+kube-proxy并不承担实际的流量转发工作，实际上，它会从kube-apiserver动态拉取最新的应用与服务状态信息，并在本机上生成iptable规则. 即使把kube-proxy停掉，已经生成的规则还是可用的.
 
 Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
 
