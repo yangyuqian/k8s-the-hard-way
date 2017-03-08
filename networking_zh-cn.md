@@ -1,4 +1,4 @@
-Kubernetes集群中的网络
+# Kubernetes集群中的网络
 
 网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他解决方案有所启发.
 
@@ -14,7 +14,7 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 
 * 容器内部使用的IP应该和外部暴露的IP一致
 
-从数据流殇，Kubernetes网络可以划分为2部分：
+从数据流上，k8s网络可以划分为2部分：
 
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
 * 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
