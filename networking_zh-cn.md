@@ -4,6 +4,8 @@
 
 > 友情提示：本文假设读者对Linux Kernel中虚拟网桥、iptables已经有一定的了解，正文中不对overlay network和iptable规则等多做赘述.
 
+## k8s网络组成分析
+
 k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https://kubernetes.io/docs/admin/networking/#kubernetes-model)）：
 
 * 容器之间不需要NAT，直接可见
@@ -12,9 +14,7 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 
 * 容器内部使用的IP应该和外部暴露的IP一致
 
-## k8s网络组成分析
-
-Kubernetes网络应该由2部分组成：
+从数据流殇，Kubernetes网络可以划分为2部分：
 
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
 * 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
