@@ -15,9 +15,7 @@ Generally, this network model defines a layer 2 connectivity among nodes in your
 
 This guide will go through some implementations of the overlay network and the overall network in a Kubernetes cluster.
 
-## List of Contents
-
-* [Flannel](/overlay-networking/flannel.md)
+## 
 
 
 
