@@ -124,12 +124,9 @@ Commercial support is available at
 <p><em>Thank you for using nginx.</em></p>
 </body>
 </html>
-
 ```
 
-Figure 1 shows the details of network of above example
-
-
+Figure 1 shows the network of above example
 
 
 
