@@ -12,7 +12,7 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 
 * 容器内部使用的IP应该和外部暴露的IP一致
 
-## k8s网络实例分析
+## 实例分析
 
 实际上，Kubernetes网络应该由2部分组成：
 
@@ -87,8 +87,4 @@ $ curl nginx-service:8000
 > 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network
 
 集群拓扑结构:
-
-
-
-
 
