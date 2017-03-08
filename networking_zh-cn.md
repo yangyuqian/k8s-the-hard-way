@@ -82,7 +82,7 @@ $ curl nginx-service:8000
 > 3. Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
 > 4. 本文中介绍iptable转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
 
-## k8s性能评估方法
+## 性能评估方法
 
 > 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network
 
