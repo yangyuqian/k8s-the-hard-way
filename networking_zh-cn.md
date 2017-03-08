@@ -6,6 +6,8 @@
 
 ## k8s网络组成分析
 
+> 本节中的试验集群使用Flannel搭建Overlay Network，其他的解决方案没有本质区别
+
 k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https://kubernetes.io/docs/admin/networking/#kubernetes-model)）：
 
 * 容器之间不需要NAT，直接可见
@@ -19,9 +21,7 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
 * 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
 
-> 本节中的试验集群使用Flannel搭建Overlay Network，其他的解决方案没有本质区别
-
-为了说明k8s集群网络，下面部署一个nginx服务，同时部署了2个pod:
+为了说明k8s集群网络，下面来部署一个nginx服务，同时部署了2个pod:
 
 ```
 $ kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-way/master/assets/nginx.yaml
@@ -82,9 +82,126 @@ $ curl nginx-service:8000
 > 3. Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
 > 4. 本文中介绍iptable转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
 
-## 性能评估方法
+## 性能评估
 
-> 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network
+> 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network.
+>
+> 这里旨在提供一种网络性能的评估方案，评估结果只能说明当前实验环境下的Flannel网络性能.
 
 集群拓扑结构:
+
+![](/assets/cluster-topgraphy.png)
+
+
+
+> 分别对下面3种网络访问方式，使用[qperf](https://linux.die.net/man/1/qperf)做TCP和UDP的带宽和延迟测试：
+>
+> 1. 节点之间
+> 2. Pod-Pod之间
+> 3. Pod-Service-Pod
+
+
+
+实验1. 节点之间
+
+Node 1上启动qperf server:
+
+```
+$ qperf
+```
+
+Node 2上测试直接访问性能：
+
+```
+$ qperf -v ${node1_ip} tcp_bw tcp_lat udp_bw udp_lat conf
+
+tcp_bw:
+    bw              =   331 MB/sec
+    msg_rate        =  5.05 K/sec
+    send_cost       =   451 ms/GB
+    recv_cost       =  2.05 sec/GB
+    send_cpus_used  =    15 % cpus
+    recv_cpus_used  =    68 % cpus
+tcp_lat:
+    latency        =   125 us
+    msg_rate       =  7.99 K/sec
+    loc_cpus_used  =    14 % cpus
+    rem_cpus_used  =    14 % cpus
+udp_bw:
+    send_bw         =  2.43 GB/sec
+    recv_bw         =   132 MB/sec
+    msg_rate        =  4.03 K/sec
+    send_cost       =   302 ms/GB
+    recv_cost       =  4.05 sec/GB
+    send_cpus_used  =  73.5 % cpus
+    recv_cpus_used  =  53.5 % cpus
+udp_lat:
+    latency        =   113 us
+    msg_rate       =  8.84 K/sec
+    loc_cpus_used  =    11 % cpus
+    rem_cpus_used  =     9 % cpus
+conf:
+    loc_node   =  kube-minion-2
+    loc_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+    loc_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+    loc_qperf  =  0.4.9
+    rem_node   =  kube-minion-1
+    rem_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+    rem_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+    rem_qperf  =  0.4.9
+
+```
+
+实验 2：Pod-Pod之间
+
+部署qperf-server：
+
+```
+$ kubectl create -f https://raw.githubusercontent.com/yangyuqian/k8s-the-hard-way/master/assets/qperf-server.yaml
+```
+
+测试Pod-Pod之间网络转发：
+
+    $ podip=`kubectl get pod --selector="k8s-app=qperf-server" -o jsonpath='{ .items[0].status.podIP }'`
+    $ kubectl run qperf-client -it --rm --image="arjanschaaf/centos-qperf" -- -v $podip -lp 4000 -ip 4001  tcp_bw tcp_lat udp_bw udp_lat conf
+
+    bw              =    170 MB/sec
+        msg_rate        =   2.59 K/sec
+        port            =  4,001
+        send_cost       =   3.07 sec/GB
+        recv_cost       =   3.27 sec/GB
+        send_cpus_used  =     52 % cpus
+        recv_cpus_used  =   55.5 % cpus
+    tcp_lat:
+        latency        =    154 us
+        msg_rate       =    6.5 K/sec
+        port           =  4,001
+        loc_cpus_used  =     16 % cpus
+        rem_cpus_used  =     17 % cpus
+    udp_bw:
+        send_bw         =   2.93 GB/sec
+        recv_bw         =   42.9 MB/sec
+        msg_rate        =   1.31 K/sec
+        port            =  4,001
+        send_cost       =    341 ms/GB
+        recv_cost       =   17.1 sec/GB
+        send_cpus_used  =    100 % cpus
+        recv_cpus_used  =   73.5 % cpus
+    udp_lat:
+        latency        =    170 us
+        msg_rate       =   5.87 K/sec
+        port           =  4,001
+        loc_cpus_used  =     17 % cpus
+        rem_cpus_used  =   22.5 % cpus
+    conf:
+        loc_node   =  qperf-client-2392635233-sbwff
+        loc_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+        loc_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+        loc_qperf  =  0.4.9
+        rem_node   =  qperf-server-rmjd8
+        rem_cpu    =  Intel Xeon E5-2650L v3 @ 1.80GHz
+        rem_os     =  Linux 3.10.0-514.6.1.el7.x86_64
+        rem_qperf  =  0.4.9
+
+
 
