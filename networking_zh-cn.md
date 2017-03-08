@@ -19,6 +19,8 @@ k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
 * 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
 
+> 本节中的试验集群使用Flannel搭建Overlay Network，其他的解决方案没有本质区别
+
 为了说明k8s集群网络，下面部署一个nginx服务，同时部署了2个pod:
 
 ```
@@ -79,6 +81,14 @@ $ curl nginx-service:8000
 > 2. Service到Pod的流量完全在本机网络中完成，简单而不失高效.
 > 3. Service对多个Pod进行流量转发时，采用iptable规则来进行负载均衡. 上面的例子中，iptable会在两个Pod中进行分别50%概率的流量转发.
 > 4. 本文中介绍iptable转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这里的表述是为了便于理解.
+
+## k8s性能评估方法
+
+> 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network
+
+集群拓扑结构:
+
+
 
 
 
