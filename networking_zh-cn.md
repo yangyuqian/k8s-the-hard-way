@@ -1,6 +1,13 @@
 # Kubernetes集群中的网络
 
-网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文从一个服务的不同访问方式入手，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他解决方案有所启发.
+网络是Kubernetes\(下称k8s\)集群中的关键组成部分.
+
+本文从一个服务的不同访问方式入手，分析了Kubernetes集群中的网络组成，也给出了一个简单可行的网络性能评估方案.
+
+另外，本文希望在几个关键的点上给出明确的答案：
+
+* Service-Pod之间转发流量时，kube-proxy是否承担流量转发？kube-proxy的转发机制是怎么样的？
+* Service-Pod之间的负载均衡的实现原理是怎么样的？是用kube-proxy来做负载均衡吗？
 
 > 本文适合对虚拟网桥、iptables以及k8s的相关概念有了解的读者.
 >
@@ -10,18 +17,10 @@
 
 > 本节中的试验集群使用Flannel搭建Overlay Network，其他的解决方案没有本质区别
 
-k8s要求网络解决方案满足以下条件（参见：[k8s网络模型](https://kubernetes.io/docs/admin/networking/#kubernetes-model)）：
-
-* 容器之间不需要NAT，直接可见
-
-* 节点和容器之间不需要NAT，直接可见
-
-* 容器内部使用的IP应该和外部暴露的IP一致
-
-从数据流上，k8s网络可以划分为2部分：
+从不同访问方式的数据流上看，一个k8s集群的网络可以划分为2部分：
 
 * k8s网络模型实现：如Overlay Network\(第三方实现中有Flannel，Contiv等\)
-* 集群内IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
+* 集群IP\(Cluster IP\)，用以集群内服务发现，DNS解析等
 
 为了说明k8s集群网络，下面来部署一个nginx服务，同时部署了2个pod:
 
