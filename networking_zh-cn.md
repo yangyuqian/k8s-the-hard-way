@@ -84,7 +84,7 @@ Service对多个Pod进行流量转发时，采用iptable规则来进行负载均
 
 ## 性能评估
 
-> 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network.
+> 测试集群采用Digital Ocean上2台VPS，用Flannel搭建overlay network, 使用vxlan backend, 默认mtu配置.
 >
 > 这里旨在提供一种网络性能的评估方案，评估结果只能说明当前实验环境下的Flannel网络性能.
 
