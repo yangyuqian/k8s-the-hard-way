@@ -1,7 +1,6 @@
 # Kubernetes集群中的网络
 
 > 本文适合对虚拟网桥、iptables以及k8s的相关概念有了解的读者.
->
 > 另外Service-Pod流量转发时提到"iptables转发"，严格说措辞不准确，因为iptables仅负责用数据库维护了kernel中netfilter的hook，这样表述是为了便于理解.
 
 本文从一个服务的不同访问方式入手，分析了k8s集群中的网络组成，也给出了一个简单可行的网络性能评估方案.
@@ -72,7 +71,7 @@ $ curl nginx-service:8000
 
 图1 上面例子的网络图解（采用flannel来搭建overlay network）
 
-![](/assets/k8s-network \(1\).png)
+![](/assets/k8s-network.png)
 
 ### 总结
 
