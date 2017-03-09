@@ -7,7 +7,7 @@
 另外，本文希望在几个关键的点上给出明确的答案：
 
 * Service-Pod之间转发流量时，kube-proxy是否承担流量转发？kube-proxy的转发机制是怎么样的？
-* Service-Pod之间的负载均衡的实现原理是怎么样的？是用kube-proxy来做负载均衡吗？
+* Service-Pod之间\(Service对应多个Pod时\)的负载均衡的实现原理是怎么样的？是用kube-proxy来做负载均衡吗？
 
 > 本文适合对虚拟网桥、iptables以及k8s的相关概念有了解的读者.
 >
