@@ -1,8 +1,8 @@
 # Kubernetes集群中的网络
 
-网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文借助一个简单的例子，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他解决方案有所启发.
+网络是Kubernetes\(下称k8s\)集群中的关键组成部分，本文从一个服务的不同访问方式入手，分析了Kubernetes集群中的网络组成以及相互之间的联系，希望能对读者在k8s运维和调试上有所帮助，也希望对其他解决方案有所启发.
 
-> 友情提示：本文假设读者对Linux Kernel中虚拟网桥、iptables已经有一定的了解，正文中不对overlay network和iptable规则等多做赘述. 另外Service-Pod流量转发时提到"iptable转发"，严格意义上措辞不准确，因为iptables只是用数据库维护了一堆kernel中netfilter的hook，这样表述是为了便于理解.
+> 本文假设读者对Linux Kernel中虚拟网桥、iptables以及k8s的相关概念有一定的了解. 另外Service-Pod流量转发时提到"iptable转发"，严格说措辞不准确，因为iptables只是用数据库维护了kernel中netfilter的hook，这样表述是为了便于理解.
 
 ## k8s网络组成分析
 
