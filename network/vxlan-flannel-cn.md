@@ -16,7 +16,7 @@ Flannel(v0.7+)支持接入不同的`backend`来搭建Overlay网络，如:
 
 `alloc`只为本机创建subnet，在多个主机上的虚拟子网不能直接通信.
 
-本文将介绍对平台和协议耦合最低的两个方案之一： `vxlan`的原理及实现，
+本文将介绍对平台和协议耦合最低的两个方案之一： `vxlan`的原理及在Flannel中的实现，
 包含以下内容：
 
 * vxlan简介
@@ -25,8 +25,10 @@ Flannel(v0.7+)支持接入不同的`backend`来搭建Overlay网络，如:
 
 # vxlan简介
 
-[vxlan(Virtual eXtensible Local Area Network)](https://tools.ietf.org/html/draft-mahalingam-dutt-dcops-vxlan-02) 是一种基于IP网络(L3)的基础上虚拟
-L2网络连接的解决方案. vxlan为多租户平台提供了虚拟网络强大的扩展能力和隔离性.
+[vxlan(Virtual eXtensible Local Area Network)](https://tools.ietf.org/html/draft-mahalingam-dutt-dcops-vxlan-02)
+是一种基于IP网络(L3)的基础上虚拟L2网络连接的解决方案.
+为多租户平台提供了虚拟网络强大的扩展能力和隔离性.
+是"软件定义网络"(Software-defined Networking, 简称SDN)的协议之一.
 
 相比vlan, vxlan有着以下优势：
 
@@ -37,9 +39,9 @@ L2网络连接的解决方案. vxlan为多租户平台提供了虚拟网络强�
 
 这里有一个关键的设备vtep(VXLAN Tunnel End Point)承担了自定义虚拟子网中不同网段的L2通信的转发.
 
-Figure 1. vxlan网络模型
+Figure 1. vxlan定义的逻辑网络
 
-
+![](/assets/vxlan.png)
 
 # Linux内核的vxlan支持
 
