@@ -63,7 +63,16 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 | Hostname | OS | Kernel | eth0 |
 | :--- | :--- | :--- | :--- |
-| node1 | CentOS 7 |  |  |
+| node1 | CentOS 7 | 3.10.0 | TODO |
+| node2 | CentOS 7 | 3.10.0 | TODO |
+
+实验目标：
+
+* 在实验主机
+
+
+
+
 
 # Flannel中vxlan backend实现原理
 
