@@ -50,6 +50,23 @@ Flannel(v0.7+)支持接入不同的`backend`来搭建Overlay网络，如:
 
 # Linux内核的vxlan支持
 
+[2012年10月](https://lwn.net/Articles/518292/)，Linux内核增加了vxlan支持.
+内核的版本要求3.7+, 推荐升级到3.9+.
+
+Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提供直接得vxlan服务.
+当然，这需要进行一些比较复杂的网络配置，可以通过诸如Flannel的实现来自动完成.
+
+## 实验：手动配置vxlan网络
+
+实验环境：
+
+> 采用Digital Ocean上的两台CentOS 7 VPS
+
+|主机名|OS|Kernel|eth0|
+|------|--|------|----|
+|node1|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO|
+|node2|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO|
+
 # Flannel中vxlan backend实现原理
 
 
