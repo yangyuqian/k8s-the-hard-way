@@ -62,10 +62,10 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 > 采用Digital Ocean上的两台CentOS 7 VPS
 
-|主机名|OS|Kernel|eth0|
-|------|--|------|----|
-|node1|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO|
-|node2|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO|
+主机名|OS|Kernel|eth0
+------|--|------|----
+node1|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO
+node2|CentOS 7|Linux 3.10.0-514.6.1.el7.x86_64|TODO
 
 # Flannel中vxlan backend实现原理
 
