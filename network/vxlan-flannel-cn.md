@@ -70,7 +70,7 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 图2. 预期的网络拓扑
 
-![](/assets/expected-network-topography.png)
+![](/assets/expected-network-topography-vxlan.png)
 
 
 
