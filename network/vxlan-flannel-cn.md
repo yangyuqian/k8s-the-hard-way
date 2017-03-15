@@ -267,5 +267,132 @@ PING 192.1.78.2 (192.1.78.2) 56(84) bytes of data.
 
 # Flannel中vxlan backend实现原理
 
+弄清楚了kernel中vxlan的原理后，就不难理解Flannel的机制了：
+
+* 使用vxlan backend时，数据是由Kernel转发的，Flannel不转发数据，仅仅动态设置ARP entry
+
+> 这里讨论的Flannel基于v0.7.0源码
+
+vxlan backend启动时会动态启动两个并发任务：
+
+* 监听Kernel中L3 MISS并反序列化成Golang对象
+* 根据L3 MISS和子网范围来配置合理的ARP entry
+
+先看一下启动两个任务的源码入口：
+
+```
+// backend/vxlan/network.go
+ 57 func (nw *network) Run(ctx context.Context) {
+ 58     log.V(0).Info("Watching for L3 misses")
+ 59     misses := make(chan *netlink.Neigh, 100)
+ 60     // Unfortunately MonitorMisses does not take a cancel channel
+ 61     // as there's no wait to interrupt netlink socket recv
+        // 这里启动一个任务来监听系统的L3 MISS，反序列化后通过channel传递给后续任务
+ 62     go nw.dev.MonitorMisses(misses)
+ 63
+ 64     wg := sync.WaitGroup{}
+ 65
+ 66     log.V(0).Info("Watching for new subnet leases")
+ 67     events := make(chan []subnet.Event)
+ 68     wg.Add(1)
+ 69     go func() {
+ 70         subnet.WatchLeases(ctx, nw.subnetMgr, nw.name, nw.SubnetLease, events)
+ 71         log.V(1).Info("WatchLeases exited")
+ 72         wg.Done()
+ 73     }()
+ 74
+ 75     defer wg.Wait()
+ 76
+ 77     select {
+ 78     case initialEventsBatch := <-events:
+ 79         for {
+ 80             err := nw.handleInitialSubnetEvents(initialEventsBatch)
+ 81             if err == nil {
+ 82                 break
+ 83             }
+ 84             log.Error(err, " About to retry")
+ 85             time.Sleep(time.Second)
+ 86         }
+ 87
+ 88     case <-ctx.Done():
+ 89         return
+ 90     }
+ 91
+ 92     for {
+ 93         select {
+ 94         case miss := <-misses:
+                // 处理L3 MISS消息
+ 95             nw.handleMiss(miss)
+ 96
+ 97         case evtBatch := <-events:
+ 98             nw.handleSubnetEvents(evtBatch)
+ 99
+100         case <-ctx.Done():
+101             return
+102         }
+103     }
+104 }
+```
+
+然后看一下它怎么监听L3 MISS:
+
+```
+# backend/vxlan/device.go
+213 func (dev *vxlanDevice) MonitorMisses(misses chan *netlink.Neigh) {
+214     nlsock, err := nl.Subscribe(syscall.NETLINK_ROUTE, syscall.RTNLGRP_NEIGH)
+215     if err != nil {
+216         log.Error("Failed to subscribe to netlink RTNLGRP_NEIGH messages")
+217         return
+218     }
+219
+220     for {
+221         msgs, err := nlsock.Receive()
+222         if err != nil {
+223             log.Errorf("Failed to receive from netlink: %v ", err)
+224
+225             time.Sleep(1 * time.Second)
+226             continue
+227         }
+228
+229         for _, msg := range msgs {
+230             dev.processNeighMsg(msg, misses)
+231         }
+232     }
+233 }
+```
+
+然后看处理L3 MISS消息的任务实现：
+
+```
+# backend/vxlan/network.go
+227 func (nw *network) handleMiss(miss *netlink.Neigh) {
+228     switch {
+229     case len(miss.IP) == 0 && len(miss.HardwareAddr) == 0:
+230         log.V(2).Info("Ignoring nil miss")
+231
+232     case len(miss.HardwareAddr) == 0:
+233         nw.handleL3Miss(miss)
+234
+235     default:
+236         log.V(4).Infof("Ignoring not a miss: %v, %v", miss.HardwareAddr, miss.IP)
+237     }
+238 }
+
+240 func (nw *network) handleL3Miss(miss *netlink.Neigh) {
+241     route := nw.routes.findByNetwork(ip.FromIP(miss.IP))
+242     if route == nil {
+243         log.V(0).Infof("L3 miss but route for %v not found", miss.IP)
+244         return
+245     }
+246
+        // 其他的代码都浅显易懂，唯一值得一提的就是这里设置的neighbor的目标MAC全部都是目标地址对应vtep的MAC
+247     if err := nw.dev.AddL3(neighbor{IP: ip.FromIP(miss.IP), MAC: route.vtepMAC}); err != nil {
+248         log.Errorf("AddL3 failed: %v", err)
+249     } else {
+250         log.V(2).Infof("L3 miss: AddL3 for %s succeeded", miss.IP)
+251     }
+252 }
+
+```
 
 
