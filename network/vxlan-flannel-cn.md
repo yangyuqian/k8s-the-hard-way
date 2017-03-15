@@ -20,7 +20,7 @@ Flannel\(v0.7+\)支持接入不同的`backend`来搭建Overlay网络，如:
 
 * vxlan简介
 * Linux内核的vxlan支持
-* Flannel中vxlan backend实现原理
+* Flannel中vxlan backend实现
 
 # vxlan简介
 
@@ -265,7 +265,7 @@ PING 192.1.78.2 (192.1.78.2) 56(84) bytes of data.
 
 ![](/assets/wanmei.jpeg)
 
-# Flannel中vxlan backend实现原理
+# Flannel中vxlan backend实现
 
 弄清楚了kernel中vxlan的原理后，就不难理解Flannel的机制了：
 
