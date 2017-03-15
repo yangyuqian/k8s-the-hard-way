@@ -72,7 +72,198 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 ![](/assets/expected-network-topography-vxlan.png)
 
+基于vxlan手动搭建Docker Overlay Network可以分为以下几步：
 
+* 创建docker bridge: 可以通过修改默认的docker0的CIDR来达到
+* 创建vxlan vteps: 通过iproute2命令来完成
+
+### 创建docker bridge
+
+默认的docker bridge地址范围是172.17.0.1/24(比较老的版本是172.17.42.1/24)，
+而本实验中两个节点node1和node2的子网要求分别为: 192.1.78.1/24，192.1.87.1/24
+
+修改docker daemon启动参数，增加以下参数后重启docker daemon:
+
+```
+# node1: --bip=192.1.78.1/24
+# node2: --bip=192.1.87.1/24
+```
+
+这时node1和node2的容器之间还不能直接通信，
+node1也不能跨主机和node2上的容器直接通信，反之node2也无法直接和node1上的容器通信.
+
+### 创建vxlan vteps
+
+在node1上执行以下脚本:
+
+```
+# node1
+
+PREFIX=vxlan
+IP=$external-ip-of-node-1
+DESTIP=$external-ip-of-node-2
+PORT=8579
+VNI=1
+SUBNETID=78
+SUBNET=192.$VNI.0.0/16
+VXSUBNET=192.$VNI.$SUBNETID.0/32
+DEVNAME=$PREFIX.$VNI
+
+ip link delete $DEVNAME
+ip link add $DEVNAME type vxlan id $VNI dev eth0 local $IP dstport $PORT nolearning
+
+echo '3' > /proc/sys/net/ipv4/neigh/$DEVNAME/app_solicit
+
+ip address add $VXSUBNET dev $DEVNAME
+
+ip link set $DEVNAME up
+
+ip route delete $SUBNET dev $DEVNAME scope global
+ip route add $SUBNET dev $DEVNAME scope global
+```
+
+在node2上执行以下脚本:
+
+```
+# node2
+
+PREFIX=vxlan
+IP=$external-ip-of-node-2
+DESTIP=$external-ip-of-node-1
+VNI=1
+SUBNETID=87
+PORT=8579
+SUBNET=192.$VNI.0.0/16
+VXSUBNET=192.$VNI.$SUBNETID.0/32
+DEVNAME=$PREFIX.$VNI
+
+ip link delete $DEVNAME
+ip link add $DEVNAME type vxlan id $VNI dev eth0 local $IP dstport $PORT nolearning
+
+echo '3' > /proc/sys/net/ipv4/neigh/$DEVNAME/app_solicit
+
+ip -d link show
+
+ip addr add $VXSUBNET dev $DEVNAME
+
+ip link set $DEVNAME up
+
+ip route delete $SUBNET dev $DEVNAME scope global
+ip route add $SUBNET dev $DEVNAME scope global
+```
+
+为vtep配置forward table, 如果是跨主机的虚拟子网IP就直接转发给对应的目标主机vtep:
+
+```
+# node1
+
+node1$ bridge fdb add $mac-of-vtep-on-node-2 dev $DEVNAME dst $DESTIP
+```
+
+```
+# node2
+
+node2$ bridge fdb add $mac-of-vtep-on-node-1 dev $DEVNAME dst $DESTI
+```
+
+配置neighors(ARP table):
+
+> ARP表通常不会手动更新，在vxlan的实现中多由对应的network agent根据L3 MISS来
+> 动态更新; 这里手动添加ARP entry仅仅是为了测试; 另外，如果跨主机访问多个IP，
+> 每个跨主机的IP就都需要配置对应的ARP entry.
+
+```
+# node1
+
+node1$ ip neighbor add $ip-on-node-2 lladdr $mac-of-vtep-on-node-2 dev vxlan.1
+```
+
+```
+# node2
+
+node2$ ip neighbor add $ip-on-node-1 lladdr $mac-of-vtep-on-node-1 dev vxlan.1
+```
+
+### 测试Overlay Network连通性
+
+这里通过测试2种连通性来总结本实验：
+
+* 容器 <-> 跨主机容器直接通信
+* 主机 -> 跨主机容器直接通信
+
+先看容器与跨主机容器间直接通信的测试.
+
+现在node1和node2上分别起一个busybox:
+
+```
+node1$ docker run -it --rm busybox sh
+
+node1$ ip a
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+6: eth0@if7: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether 02:42:c0:01:4e:02 brd ff:ff:ff:ff:ff:ff
+    inet 192.1.78.2/24 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:c0ff:fe01:4e02/64 scope link
+       valid_lft forever preferred_lft forever
+
+node2$ docker run -it --rm busybox sh
+
+node2$ ip a
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+10: eth0@if11: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether 02:42:c0:01:57:02 brd ff:ff:ff:ff:ff:ff
+    inet 192.1.87.2/24 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:c0ff:fe01:5702/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+来享受一下容器之间的连通性：
+
+```
+node1@busybox$ ping -c1 192.1.87.2
+
+PING 192.1.87.2 (192.1.87.2): 56 data bytes
+64 bytes from 192.1.87.2: seq=0 ttl=62 time=2.002 ms
+```
+
+```
+node2@busybox$ ping -c1 192.1.78.2
+
+PING 192.1.78.2 (192.1.78.2): 56 data bytes
+64 bytes from 192.1.78.2: seq=0 ttl=62 time=1.360 ms
+```
+
+然后看主机和跨主机容器之间连通性的测试.
+
+```
+node1$ ping -c1 192.1.87.2
+
+PING 192.1.87.2 (192.1.87.2) 56(84) bytes of data.
+64 bytes from 192.1.87.2: icmp_seq=1 ttl=63 time=1.49 ms
+```
+
+```
+node2$ ping -c1 192.1.78.2
+
+PING 192.1.78.2 (192.1.78.2) 56(84) bytes of data.
+64 bytes from 192.1.78.2: icmp_seq=1 ttl=63 time=1.34 ms
+```
+
+![](/assets/wanmei.jpeg)
 
 # Flannel中vxlan backend实现原理
 
