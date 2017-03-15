@@ -63,14 +63,14 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 | Hostname | OS | Kernel | eth0 |
 | :--- | :--- | :--- | :--- |
-| node1 | CentOS 7 | 3.10.0 | TODO |
-| node2 | CentOS 7 | 3.10.0 | TODO |
+| node1 | CentOS 7 | 3.10.0 | $external-ip-of-node-1 |
+| node2 | CentOS 7 | 3.10.0 | $external-ip-of-node-2 |
 
-实验目标：
+实验目标：在实验主机上搭建虚拟子网192.1.0.0/16, 让主机上vxlan子网内的虚拟IP直接通信
 
-* 在实验主机
+图2. 预期的网络拓扑
 
-
+![](/assets/expected-network-topography.png)
 
 
 
