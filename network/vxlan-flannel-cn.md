@@ -25,8 +25,8 @@ Flannel\(v0.7+\)支持接入不同的`backend`来搭建Overlay网络，如:
 # vxlan简介
 
 [vxlan\(Virtual eXtensible Local Area Network\)](https://tools.ietf.org/html/draft-mahalingam-dutt-dcops-vxlan-02)  
-是一种基于IP网络\(L3\)的基础上虚拟L2网络连接的解决方案.  
-为多租户平台提供了虚拟网络强大的扩展能力和隔离性.  
+是一种基于IP网络\(L3\)的基础上虚拟L2网络连接的解决方案.
+为多租户平台提供了虚拟网络强大的扩展能力和隔离性.
 是"软件定义网络"\(Software-defined Networking, 简称SDN\)的协议之一.
 
 相比vlan, vxlan有着以下优势：
