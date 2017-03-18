@@ -163,7 +163,7 @@ node1$ bridge fdb add $mac-of-vtep-on-node-2 dev $DEVNAME dst $DESTIP
 ```
 # node2
 
-node2$ bridge fdb add $mac-of-vtep-on-node-1 dev $DEVNAME dst $DESTI
+node2$ bridge fdb add $mac-of-vtep-on-node-1 dev $DEVNAME dst $DESTIP
 ```
 
 配置neighors(ARP table):
