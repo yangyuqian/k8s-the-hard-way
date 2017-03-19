@@ -2,7 +2,7 @@ Kubernetes - The Hard Way
 ------------
 
 This tutorial consists of summaries and slides on important topics of Kubernetes,
-including networking, scheduling and others.
+including networking, scheduling etc.
 
 # List of Contents
 
