@@ -1,13 +1,13 @@
 Kubernetes - The Hard Way
 ------------
 
-This tutorial will walk you through some of the most important topics
-in Kubernetes in the hard way, to make it easier to manipulate an k8s cluster.
+This tutorial consists of summaries and slides on important topics of Kubernetes,
+including networking, scheduling and others.
 
 # List of Contents
 
 Network
 
-* overlay network by flannel
-* kube-proxy and Services
-* DNS - implementation of SkyDNS
+* [Brief Introduction to Network in Kubernetes Cluster(Chinese)](/network/summary-cn.md)
+* [In-depth summary of VXLAN backend in Flannel(Chinese)](/network/vxlan-flannel-cn.md) and [Slides(English)](/ppt/vxlan-flannel-cn.pptx)
+
