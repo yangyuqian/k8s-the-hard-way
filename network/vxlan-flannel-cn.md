@@ -57,6 +57,8 @@ Linux内核支持vxlan意味着linux系统可以为主机内的虚拟网络提�
 
 ## 实验：手动配置vxlan网络
 
+[![demo](https://asciinema.org/a/bavkebqxc4wjgb2zv0t97es9y)](https://asciinema.org/a/bavkebqxc4wjgb2zv0t97es9y)
+
 实验环境：
 
 > 采用Digital Ocean上的两台CentOS 7 VPS
